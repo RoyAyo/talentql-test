@@ -1,0 +1,19 @@
+{
+  "name": "talentql-test",
+  "version": "1.0.0",
+  "description": "Talentql test",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RoyAyo/talentql-test.git"
+  },
+  "author": "Roy Ayo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RoyAyo/talentql-test/issues"
+  },
+  "homepage": "https://github.com/RoyAyo/talentql-test#readme"
+}
