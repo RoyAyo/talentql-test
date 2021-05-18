@@ -26,7 +26,7 @@ app.use(mongoSanitize());
 app.use(helmet());
 app.use(hpp());
 app.use(xss());
-app.use('/images',express.static(path.join(__dirname, "docs")))
+app.use('/files',express.static(path.join(__dirname, "files")));
 
 // logging
 if (process.env.ENV === "DEVELOPMENT") {
@@ -40,7 +40,7 @@ app.get('/', (req,res)=> {
   res.send('api testing')
 });
 app.use('/auth', require('./routes/api/auth'));
-app.use('/post', require('./routes/api/post'));
+app.use('/posts', require('./routes/api/post'));
 
 const server = app.listen(PORT, () => {
   console.log(
@@ -61,3 +61,5 @@ process.on("uncaughtException", (err, promise) => {
   // Close server & exit process
   server.close(() => process.exit(1))
 })
+
+module.exports.app = app;

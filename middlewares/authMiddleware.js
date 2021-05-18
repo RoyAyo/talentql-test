@@ -1,12 +1,14 @@
 const {client} = require('../config/Redis');
 const jwt = require('jsonwebtoken');
 
+const { User } = require('../models/User');
+
 const auth = async (req,res,next) => {
     try {
-        const authHeader = req.headers.AUTHORIZATION;
+        const authHeader = req.headers.authorization;
 
         if(!authHeader){
-            res.status(401).json({
+            return res.status(401).json({
                 success : false,
                 message : 'AUTHORIZATION Header not found'
             });
@@ -14,18 +16,18 @@ const auth = async (req,res,next) => {
 
         const token = authHeader.split(' ')[1];
 
-        const payload = jwt.verify(token, process.env.TOKEN_SECRET);
+        const payload = jwt.verify(token, process.env.JWT_SECRET);
     
         if(!payload){
-            res.status(401).json({
+            return res.status(401).json({
                 success : false,
                 message : 'Invalid payload'
             });
         }
 
-        const data = await client.getAsync(payload.id)
+        const data = await client.getAsync(payload.id);
         
-        if(!data){
+        if(data){
             req.user = JSON.parse(data);
 
             return next();

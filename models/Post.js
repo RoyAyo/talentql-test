@@ -6,17 +6,18 @@ const PostSchema = Schema(
   {
     user : {
         id : Schema.Types.ObjectId,
-        name : {
+        fullName : {
             type : String,
             required : true
         }
     },
 
-    post : {
-        type : String
+    postMessage : {
+        type : String,
+        required : true
     },
 
-    imgaePaths : [
+    imagePaths : [
         {
             type : String
         }

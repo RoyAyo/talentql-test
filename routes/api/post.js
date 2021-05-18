@@ -1,5 +1,5 @@
 const express = require('express');
-const { createPost, getPost, editPost, deletePost } = require('../../controllers/postsController');
+const { createPost, getPost, editPost, deletePost, getPosts } = require('../../controllers/postsController');
 const router = express.Router();
 
 //controllers
@@ -7,14 +7,14 @@ const router = express.Router();
 //middlewares
 const { auth } = require('../../middlewares/authMiddleware');
 
-router.get('/posts');
+router.get('/', getPosts);
 
-router.post('/create', createPost);
+router.post('/create', auth, createPost);
 
-router.get('/:id', auth, getPost);
+router.get('/post/:id', getPost);
 
-router.put('/:id', auth, editPost );
+router.put('/post/:id', auth, editPost );
 
-router.delete('/:id', auth, deletePost );
+router.delete('/post/:id', auth, deletePost );
 
 module.exports = router;
