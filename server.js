@@ -40,7 +40,7 @@ if (process.env.ENV === "DEVELOPMENT") {
 app.get('/', (req,res)=> {
   res.send('api testing')
 });
-app.routes('/auth', )
+app.routes('/auth')
 
 
 const server = app.listen(PORT, () => {

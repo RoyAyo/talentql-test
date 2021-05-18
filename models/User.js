@@ -26,6 +26,11 @@ const UserSchema = Schema(
         minLength: 7,
         select: false,
       },
+
+      emailVerified : {
+          type : Boolean,
+          default : False
+      }
   },
   {
     timestamps: true,
