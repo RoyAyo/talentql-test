@@ -13,7 +13,7 @@ router.post('/register', registerUser);
 
 router.post('/login', loginUser);
 
-router.post('/email/verify', verifyEmail);
+router.get('/email/verify/:token', verifyEmail);
 
 router.post('/password/forgot', passwordForgot);
 

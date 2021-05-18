@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const {Validator} = require('node-input-validator');
 
 
@@ -109,21 +110,7 @@ const loginUser = async (req,res) => {
 
 const verifyEmail = async (req,res) => {
     try {
-
-        const validate = new Validator(req.body,{
-            'verify_token' : 'required|string',
-        });
-
-        const matched = await validate.check();
-
-        if(!matched){
-            return res.status(400).json({
-                success:false,
-                message: validate.errors
-            });
-        }
-
-        const verify_token = req.body.verify_token;
+        const verify_token = req.params.token;
 
         const salt = 'salt-secret';
 
@@ -179,7 +166,7 @@ const passwordForgot = async (req,res) => {
             });
         }
 
-        const user = await User.findOne({email});
+        const user = await User.findOne({email:req.body.email});
 
         if(!user){
             return res.status(404).json({
@@ -192,7 +179,7 @@ const passwordForgot = async (req,res) => {
         const hashed = user.password;
         const id = user._id;
 
-        const verify_token = jwt.sign({id,password:hashed},'secret_salt');
+        const verifyToken = jwt.sign({id,password:hashed},'secret_salt');
 
         const url = process.env.ENVIRONMENT = 'production' ? 'http://localhost:3000' : 'http://localhost:3000';
 
@@ -200,7 +187,8 @@ const passwordForgot = async (req,res) => {
         
         return res.json({
             success : true,
-            message : 'Password Reset email successfully sent'
+            message : 'Password Reset email successfully sent',
+            token : verifyToken
         })
 
     } catch (error) {
@@ -236,7 +224,7 @@ const passwordReset = async (req,res) => {
             });
         }
 
-        const payload = jwt.verify(req.body.verify_token,'secret-salt');
+        const payload = jwt.verify(req.body.verify_token,'secret_salt');
 
         if(!payload){
             return res.status(401).json({
@@ -245,7 +233,7 @@ const passwordReset = async (req,res) => {
             });
         }
 
-        const id = payload._id;
+        const id = payload.id;
 
         const user = await User.findById(id);
 

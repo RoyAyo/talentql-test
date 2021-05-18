@@ -8,8 +8,10 @@ const UserSchema = Schema(
     // User Id that wants User
     fullName : {
         type : String,
-        required : [true,'Name is required']
+        required : [true,'Name is required'],
+        minlength: ["3", "Username must be at least 3 characters"]
     },
+
     email : {
         type : String,
         required: [true, "Email is required"],
@@ -20,6 +22,7 @@ const UserSchema = Schema(
           "Please add a valid email",
         ],
     },
+    
     password: {
         type: String,
         required: [true, "Please add a password"],

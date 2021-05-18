@@ -74,7 +74,7 @@ const createPost = async(req,res) => {
 const getPosts = async (req,res) => {
     try {
         
-        const posts = await Post.find({isDeleted : false});
+        const posts = await Post.find({isDeleted : false}).sort({createdAt:-1});
 
         return res.json({
             success : true,
