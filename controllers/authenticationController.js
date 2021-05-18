@@ -4,7 +4,7 @@ const {Validator} = require('node-input-validator');
 
 const {User} = require('../models/User');
 
-const RegisterUser = async(req,res) => {
+const registerUser = async(req,res) => {
     try {
 
         const validate = new Validator(req.body,{
@@ -39,7 +39,7 @@ const RegisterUser = async(req,res) => {
 
         // add email in queue
 
-        // add user to cache in queue
+        client.set(user._id,user);
 
         return res.json({
             success : true,
@@ -48,16 +48,14 @@ const RegisterUser = async(req,res) => {
         });
         
     } catch (error) {
-        if(!matched){
-            return res.status(422).json({
-                success:false,
-                message: 'Unable to validate email'
-            });
-        }
+        return res.status(422).json({
+            success:false,
+            message: error.message
+        });
     }
 };
 
-const LoginUser = async (req,res) => {
+const loginUser = async (req,res) => {
     try {
         
         const validate = new Validator(req.body,{
@@ -77,13 +75,19 @@ const LoginUser = async (req,res) => {
         const user = await User.findOne({email : req.body.email});
 
         if(!user){
-
+            res.status(404).json({
+                success : false,
+                message : 'User not found'
+            });
         }
 
         const valid_user = await bcrypt.compare(req.body.password,user.password);
 
         if(!valid_user){
-
+            res.status(400).json({
+                success : false,
+                message : 'Invalid credentials'
+            });
         }
 
         const token = User.generateAuthToken();
@@ -95,7 +99,10 @@ const LoginUser = async (req,res) => {
         });
 
     } catch (error) {
-        
+        res.status(422).json({
+            success : false,
+            message : error.message
+        });
     }
 };
 
@@ -122,13 +129,19 @@ const verifyEmail = async (req,res) => {
         const payload = jwt.verify(verify_token,salt);
 
         if(!payload){
-
+            res.status(400).json({
+                success : false,
+                message : 'Invalid Token Provided'
+            });
         }
 
         const user = await User.findOne({email:payload.email});
 
         if(user.emailVerified){
-
+            res.status(400).json({
+                success : false,
+                message : 'User email already verified'
+            });
         }
 
         user.emailVerified = true;
@@ -142,11 +155,14 @@ const verifyEmail = async (req,res) => {
 
         
     } catch (error) {
-        
+        res.status(422).json({
+            success : false,
+            message : error.message
+        });
     }
-}
+};
 
-const PasswordReset = async (req,res) => {
+const passwordForgot = async (req,res) => {
     try {
         
         const validate = new Validator(req.body,{
@@ -165,7 +181,10 @@ const PasswordReset = async (req,res) => {
         const user = await User.findOne({email});
 
         if(!user){
-
+            res.status(404).json({
+                success : false,
+                message : 'User not found'
+            });
         }
 
         // get users previous hashed password to ensure token is only used once
@@ -174,7 +193,7 @@ const PasswordReset = async (req,res) => {
 
         const verify_token = jwt.sign({id,password:hashed},'secret_salt');
 
-        const url = process.env.ENVIRONMENT = 'DEVELOPMENT' ? 'http://localhost:3000' : 'http://';
+        const url = process.env.ENVIRONMENT = 'production' ? 'http://localhost:3000' : 'http://localhost:3000';
 
         // send email here..
         
@@ -184,11 +203,14 @@ const PasswordReset = async (req,res) => {
         })
 
     } catch (error) {
-        
+        res.status(422).json({
+            success : false,
+            message : error.message
+        });
     }
-}
+};
 
-const PasswordConfirmation = async (req,res) => {
+const passwordReset = async (req,res) => {
     try {
         
         const validate = new Validator(req.body,{
@@ -207,15 +229,19 @@ const PasswordConfirmation = async (req,res) => {
         }
 
         if(req.body.password !== req.body.confirmPassword){
-
-
-
+            res.status(400).json({
+                success : false,
+                message : 'Passwords do not match'
+            });
         }
 
         const payload = jwt.verify(req.body.verify_token,'secret-salt');
 
         if(!payload){
-
+            res.status(401).json({
+                success : false,
+                message : 'Invalid Token Provided'
+            });
         }
 
         const id = payload._id;
@@ -224,7 +250,10 @@ const PasswordConfirmation = async (req,res) => {
 
         // ensure the token is only valid once(i.e password in payload hasn't changed)
         if(payload.password !== user.password){
-
+            res.status(403).json({
+                success : false,
+                message : 'The password link has already been used'
+            });
         }
         
         const salt = await bcrypt.genSalt(10);
@@ -241,6 +270,17 @@ const PasswordConfirmation = async (req,res) => {
 
 
     } catch (error) {
-
+        res.status(422).json({
+            success : false,
+            message : error.message
+        });
     }
-}
+};
+
+module.exports = {
+    registerUser,
+    loginUser,
+    verifyEmail,
+    passwordForgot,
+    passwordReset
+};

@@ -3,37 +3,56 @@ const jwt = require('jsonwebtoken');
 
 const auth = async (req,res,next) => {
     try {
-        const token = req.body.header;
+        const authHeader = req.headers.AUTHORIZATION;
 
-
-        if(!token || token === undefined){
-            throw new Error('No token was sent')
+        if(!authHeader){
+            res.status(401).json({
+                success : false,
+                message : 'AUTHORIZATION Header not found'
+            });
         }
+
+        const token = authHeader.split(' ')[1];
 
         const payload = jwt.verify(token, process.env.TOKEN_SECRET);
     
         if(!payload){
-            
+            res.status(401).json({
+                success : false,
+                message : 'Invalid payload'
+            });
         }
 
         const data = await client.getAsync(payload.id)
         
         if(!data){
-            // log the error
-            return res.status(401).json({
-                error : true,
-                message : "Invalid user access",
-                data :{}
-            });
+            req.user = data;
+
+            return next();
         }
 
-        next();
+        // get the user from 
+        const user = await User.findOneByToken(token);
+
+        if(user){
+            client.set(user._id,user);
+    
+            req.user = user;
+    
+            return next();
+        }
+
+
+        return res.status(401).json({
+            success : false,
+            message : "Invalid user access"
+        });
+
     } catch (error) {
         // error 
         res.status(422).json({
-            error : true,
-            message : error.message,
-            data :{}
+            success : false,
+            message : error.message
         });
     }
 };
