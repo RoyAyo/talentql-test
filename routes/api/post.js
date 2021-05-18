@@ -9,12 +9,12 @@ const { auth } = require('../../middlewares/authMiddleware');
 
 router.get('/posts');
 
-router.post('/post/create', createPost);
+router.post('/create', createPost);
 
-router.get('/post/:id', auth, getPost);
+router.get('/:id', auth, getPost);
 
-router.put('/post/:id', auth, editPost );
+router.put('/:id', auth, editPost );
 
-router.delete('/post/:id', auth, deletePost );
+router.delete('/:id', auth, deletePost );
 
 module.exports = router;

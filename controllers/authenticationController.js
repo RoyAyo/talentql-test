@@ -3,13 +3,14 @@ const {Validator} = require('node-input-validator');
 
 
 const {User} = require('../models/User');
+const {client} = require('../config/Redis');
 
 const registerUser = async(req,res) => {
     try {
 
         const validate = new Validator(req.body,{
             'fullName' : 'required|string',
-            'email' : 'required|string',
+            'email' : 'required|string|email',
             'password' : 'required|string'
         });
 
@@ -31,19 +32,19 @@ const registerUser = async(req,res) => {
         const salt = await bcrypt.genSalt(10);
         const hashPassword = await bcrypt.hash(password,salt);
 
-        const user = new User({fullName,email,hashPassword});
+        const user = new User({fullName,email,password:hashPassword});
 
         const new_user = await user.save();
-
+        
         const token = await new_user.generateAuthToken();
 
-        // add email in queue
-
-        client.set(user._id,user);
+        if(client){
+            client.set(`${user._id.toHexString()}`,JSON.stringify(new_user));
+        }
 
         return res.json({
             success : true,
-            message : 'User successfully registered',
+            message : 'User sucucessfully registered',
             _token : token
         });
         
@@ -75,7 +76,7 @@ const loginUser = async (req,res) => {
         const user = await User.findOne({email : req.body.email});
 
         if(!user){
-            res.status(404).json({
+            return res.status(404).json({
                 success : false,
                 message : 'User not found'
             });
@@ -84,13 +85,13 @@ const loginUser = async (req,res) => {
         const valid_user = await bcrypt.compare(req.body.password,user.password);
 
         if(!valid_user){
-            res.status(400).json({
+            return res.status(400).json({
                 success : false,
                 message : 'Invalid credentials'
             });
         }
 
-        const token = User.generateAuthToken();
+        const token = await user.generateAuthToken();
 
         return res.json({
             success : true,
@@ -99,7 +100,7 @@ const loginUser = async (req,res) => {
         });
 
     } catch (error) {
-        res.status(422).json({
+        return res.status(422).json({
             success : false,
             message : error.message
         });
@@ -124,12 +125,12 @@ const verifyEmail = async (req,res) => {
 
         const verify_token = req.body.verify_token;
 
-        const salt = process.env.EMAIL_SECRET;
+        const salt = 'salt-secret';
 
         const payload = jwt.verify(verify_token,salt);
 
         if(!payload){
-            res.status(400).json({
+            return res.status(400).json({
                 success : false,
                 message : 'Invalid Token Provided'
             });
@@ -138,7 +139,7 @@ const verifyEmail = async (req,res) => {
         const user = await User.findOne({email:payload.email});
 
         if(user.emailVerified){
-            res.status(400).json({
+            return res.status(400).json({
                 success : false,
                 message : 'User email already verified'
             });
@@ -155,7 +156,7 @@ const verifyEmail = async (req,res) => {
 
         
     } catch (error) {
-        res.status(422).json({
+        return res.status(422).json({
             success : false,
             message : error.message
         });
@@ -181,7 +182,7 @@ const passwordForgot = async (req,res) => {
         const user = await User.findOne({email});
 
         if(!user){
-            res.status(404).json({
+            return res.status(404).json({
                 success : false,
                 message : 'User not found'
             });
@@ -229,7 +230,7 @@ const passwordReset = async (req,res) => {
         }
 
         if(req.body.password !== req.body.confirmPassword){
-            res.status(400).json({
+            return res.status(400).json({
                 success : false,
                 message : 'Passwords do not match'
             });
@@ -238,7 +239,7 @@ const passwordReset = async (req,res) => {
         const payload = jwt.verify(req.body.verify_token,'secret-salt');
 
         if(!payload){
-            res.status(401).json({
+            return res.status(401).json({
                 success : false,
                 message : 'Invalid Token Provided'
             });
@@ -250,7 +251,7 @@ const passwordReset = async (req,res) => {
 
         // ensure the token is only valid once(i.e password in payload hasn't changed)
         if(payload.password !== user.password){
-            res.status(403).json({
+            return res.status(403).json({
                 success : false,
                 message : 'The password link has already been used'
             });

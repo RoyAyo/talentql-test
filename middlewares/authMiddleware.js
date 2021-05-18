@@ -26,7 +26,7 @@ const auth = async (req,res,next) => {
         const data = await client.getAsync(payload.id)
         
         if(!data){
-            req.user = data;
+            req.user = JSON.parse(data);
 
             return next();
         }

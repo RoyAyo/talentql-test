@@ -23,13 +23,12 @@ const UserSchema = Schema(
     password: {
         type: String,
         required: [true, "Please add a password"],
-        minLength: 7,
-        select: false,
+        minLength: 7
       },
 
       emailVerified : {
           type : Boolean,
-          default : False
+          default : false
       }
   },
   {

@@ -22,7 +22,6 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended:false}));
 app.use(fileUpload({createParentPath:true}));
-app.use(cookieParser());
 app.use(mongoSanitize());
 app.use(helmet());
 app.use(hpp());
@@ -40,12 +39,12 @@ if (process.env.ENV === "DEVELOPMENT") {
 app.get('/', (req,res)=> {
   res.send('api testing')
 });
-app.routes('/auth')
-
+app.use('/auth', require('./routes/api/auth'));
+app.use('/post', require('./routes/api/post'));
 
 const server = app.listen(PORT, () => {
   console.log(
-    `Server now listening on port ${PORT} in ${process.env.ENV} mode`
+    `Server now listening on port ${PORT} in ${process.env.NODE_ENV} mode`
   );
 })
 
