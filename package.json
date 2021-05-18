@@ -15,5 +15,21 @@
   "bugs": {
     "url": "https://github.com/RoyAyo/talentql-test/issues"
   },
-  "homepage": "https://github.com/RoyAyo/talentql-test#readme"
+  "homepage": "https://github.com/RoyAyo/talentql-test#readme",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "express-fileupload": "^1.2.1",
+    "express-mongo-sanitize": "^2.1.0",
+    "helmet": "^4.6.0",
+    "hpp": "^0.2.3",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.12.9",
+    "morgan": "^1.10.0",
+    "node-input-validator": "^4.4.1",
+    "nodemailer": "^6.6.0",
+    "redis": "^3.1.2",
+    "xss-clean": "^0.1.1"
+  }
 }
