@@ -47,7 +47,7 @@ const registerUser = async(req,res) => {
         // send email
         const link = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:3000'; 
         const email_token = jwt.sign({email},'salt-secret');
-        const html = `<h4>Please Help Verify this email, no vex sey I ugly</h4><p>${link}/auth/email/verify/${email_token}</p>`
+        const html = `<h4>Please Help Verify this email</h4><p>${link}/auth/email/verify/${email_token}</p>`
         sendEmailQueue.add({email,html});
 
         return res.json({
@@ -189,7 +189,7 @@ const passwordForgot = async (req,res) => {
 
         // send email
         const link = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:3000'; 
-        const html = `<h4>This is a link to Change your password, valid only once, no vex sey I ugly</h4><p>${link}/password/change/${verifyToken}</p>`
+        const html = `<h4>This is a link to Change your password, valid only once</h4><p>${link}/password/change/${verifyToken}</p>`
         sendEmailQueue.add({email:req.body.email,html});
         
         return res.json({
