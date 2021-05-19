@@ -23,16 +23,21 @@ sendEmailQueue.process(async(job,done) => {
         } = job.data;
 
         transporter.sendMail({
-            from : 'Roy Test <roy@gmail.com>',
+            from : 'Roy TALENTQL <roy@gmail.com>',
             to : email,
-            subject : ' Email',
+            subject : ' TALENTQL TEST EMAIL',
             html
+        })
+        .then(() => {
+            done();
+        })
+        .catch(e => {
+            console.log(e);
+            done(e)
         });
 
     } catch (error) {
-        
         done(error);
-
     }
 
 });

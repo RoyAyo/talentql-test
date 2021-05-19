@@ -12,6 +12,7 @@ const xss = require("xss-clean");
 require("dotenv").config();
 require('./config/Db');
 require('./config/Redis');
+require('./config/Queue');
 
 // initialization
 const app = express();

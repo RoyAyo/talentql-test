@@ -20,6 +20,7 @@ describe('POST /auth/register', () => {
         .send({fullName,email,password})
         .expect(200)
         .expect((res) => {
+            console.log(res.body);
             expect(res.body.success).toBe(true);
         })
         .end(err => {
@@ -52,12 +53,12 @@ describe('POST /auth/register', () => {
             });
     });
 
-    it('should return 400 for using already existing emails', (done) => {
+    it('should return 422 for using already existing emails', (done) => {
 
         request(app)
             .post('/auth/register')
             .send({ fullName : 'Sapa King',email : 'sapa@test.com' ,password:'1235678'})
-            .expect(400)
+            .expect(422)
             .expect(res => {
                 expect(res.body.success).toBe(false);
             })

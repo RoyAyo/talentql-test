@@ -37,24 +37,33 @@ const populateUsers = (done) => {
 
 const posts = [{
   _id: new ObjectID(),
-  postMessage: 'I like the way you do your things'
+  postMessage: 'Sapa, Nice defending!!',
+  user : {
+    id : userOneId,
+    fullName : users[0].fullName
+  }
 }, {
   _id: new ObjectID(),
-  postMessage: 'Sapa, how far free me!!'
+  postMessage: 'I like the way you do your things',
+  user : {
+    id : userTwoId,
+    fullName : users[1].fullName
+  },
+  isDeleted : true
 }];
 
 const populatePosts = (done) => {      
-    posts.deleteMany({}).then(() => {
+    Post.deleteMany({}).then(() => {
       return Post.insertMany(posts)
     }).then(() => {
-      done()
+      done();
     });
 
 };
 
 module.exports = {
-    users,
    populateUsers,
+   users,
    posts,
    populatePosts
 };

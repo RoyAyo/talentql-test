@@ -39,7 +39,7 @@ const UserSchema = Schema(
   }
 )
 
-UserSchema.statics.findOneByToken = async function(){
+UserSchema.statics.findOneByToken = async function(token){
 
     try {
         

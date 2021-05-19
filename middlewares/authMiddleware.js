@@ -15,9 +15,11 @@ const auth = async (req,res,next) => {
         }
 
         const token = authHeader.split(' ')[1];
-
+        
         const payload = jwt.verify(token, process.env.JWT_SECRET);
     
+        console.log(payload);
+
         if(!payload){
             return res.status(401).json({
                 success : false,
@@ -40,7 +42,7 @@ const auth = async (req,res,next) => {
         const user = await User.findOneByToken(token);
 
         if(user){
-            client.set(user._id,user);
+            client.set(user._id.toHexString(),JSON.stringify(user));
     
             req.user = user;
     
