@@ -9,10 +9,20 @@ You will need Redis and Mongodb set up in your local environment to properly run
 
 - [**Mongodb**](https://docs.mongodb.com/manual/installation/)
 
-## Getting Started
-- Clone this repository into your local environment
+## Setting up your application
+- - Clone this repository into your local environment
 ```git clone https://github.com/RoyAyo/talentql-test.git```
 
+- Create a .env file in your root project, copy and paste the following
+  NODE_ENV = development
+  PORT = 3000
+  JWT_SECRET = 'test-secret'
+  MONGO_URI = mongodb://localhost:27017/talentqldb
+  MONGO_URI_TEST = mongodb://localhost:27017/talentqltestdb
+  MAIL_USERNAME = roytest791@gmail.com
+  MAIL_PASSWORD = testing-123
+
+## Getting Started
 - Install the required packages by running 
 ```npm install```
 
