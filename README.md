@@ -1,4 +1,4 @@
-# talentql-test
+# TALENTQL-TEST
 
 ## About
 This is for the talentql mid-level developer test
