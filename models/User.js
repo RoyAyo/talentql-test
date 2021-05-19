@@ -39,19 +39,6 @@ const UserSchema = Schema(
   }
 )
 
-// UserSchema.pre('save', async function(){
-
-//     if(this.isModified('password')){
-
-//         const salt = await bcrypt.genSalt(10);
-//         const hashpassword = await bcrypt.hash(this.password,salt);
-
-//         this.password = hashpassword;
-
-//     };
-
-// });
-
 UserSchema.statics.findOneByToken = async function(){
 
     try {
@@ -92,7 +79,7 @@ UserSchema.methods.generateAuthToken = async function(){
 
 };
 
-const User = model("User", UserSchema)
+const User = model("users", UserSchema);
 
 module.exports = {
   User

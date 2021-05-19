@@ -48,6 +48,8 @@ const server = app.listen(PORT, () => {
   );
 })
 
+module.exports = {app};
+
 // Handle unhandled promise rejections
 process.on("unhandledRejection", (err, promise) => {
   console.error(`Error: ${err.message}`.red);
@@ -61,5 +63,3 @@ process.on("uncaughtException", (err, promise) => {
   // Close server & exit process
   server.close(() => process.exit(1))
 })
-
-module.exports.app = app;

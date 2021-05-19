@@ -35,7 +35,7 @@ const PostSchema = Schema(
 )
 
 
-const Post = model("Post", PostSchema)
+const Post = model("posts", PostSchema)
 
 module.exports = {
   Post

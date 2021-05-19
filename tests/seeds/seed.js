@@ -16,9 +16,9 @@ const users = [{
 const populateUsers = async (done) => {
     await User.remove({});
     
-    await new User(users[0]).save();
+    // await new User(users[0]).save();
     
-    await new User(users[1]).save();
+    // await new User(users[1]).save();
   
     done();
 

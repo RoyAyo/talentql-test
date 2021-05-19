@@ -25,13 +25,16 @@ const auth = async (req,res,next) => {
             });
         }
 
-        const data = await client.getAsync(payload.id);
-        
-        if(data){
-            req.user = JSON.parse(data);
-
-            return next();
+        if(client){
+            const data = await client.getAsync(payload.id);
+            
+            if(data){
+                req.user = JSON.parse(data);
+    
+                return next();
+            }
         }
+
 
         // get the user from 
         const user = await User.findOneByToken(token);

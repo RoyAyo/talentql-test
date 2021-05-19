@@ -5,6 +5,7 @@ const {Validator} = require('node-input-validator');
 
 const {User} = require('../models/User');
 const {client} = require('../config/Redis');
+const { sendEmailQueue } = require('../config/Queue');
 
 const registerUser = async(req,res) => {
     try {
@@ -43,9 +44,15 @@ const registerUser = async(req,res) => {
             client.set(`${user._id.toHexString()}`,JSON.stringify(new_user));
         }
 
+        // send email
+        const link = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:3000'; 
+        const email_token = jwt.sign({email},'salt-secret');
+        const html = `<h4>Please Help Verify this email, no vex sey I ugly</h4><p>${link}/auth/email/verify/${email_token}</p>`
+        sendEmailQueue.add({email,html});
+
         return res.json({
             success : true,
-            message : 'User sucucessfully registered',
+            message : 'User sucucessfully registered, Verification Email sent',
             _token : token
         });
         
@@ -181,14 +188,14 @@ const passwordForgot = async (req,res) => {
 
         const verifyToken = jwt.sign({id,password:hashed},'secret_salt');
 
-        const url = process.env.ENVIRONMENT = 'production' ? 'http://localhost:3000' : 'http://localhost:3000';
-
-        // send email here..
+        // send email
+        const link = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:3000'; 
+        const html = `<h4>This is a link to Change your password, valid only once, no vex sey I ugly</h4><p>${link}/password/change/${verifyToken}</p>`
+        sendEmailQueue.add({email:req.body.email,html});
         
         return res.json({
             success : true,
-            message : 'Password Reset email successfully sent',
-            token : verifyToken
+            message : 'Password Reset email successfully sent'
         })
 
     } catch (error) {

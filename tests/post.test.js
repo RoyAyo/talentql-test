@@ -1,12 +1,25 @@
-const { request } = require("supertest");
+// const { request } = require("supertest");
 
-describt('POST /', () => {
+// describt('POST /', () => {
 
-    it('should create a post', done => {
+//     const postMessage = "This is a new Test Message";
 
-        request(app)
-            .post('/posts/create')
+//     it('should create a post', done => {
 
-    });
+//         request(app)
+//             .post('/posts/create')
+//             .send({postMessage})
+//             .expect(200)
+//             .expect(res => {
+//                 expect(res.body.success).toBe(true);
+//             })
+//             .end(err => {
+//                 if(err){
+//                     return done(err);
+//                 }
+//                 done();
+//             });
 
-});
+//     });
+
+// });
