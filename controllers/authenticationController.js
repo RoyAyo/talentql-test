@@ -66,7 +66,6 @@ const registerUser = async(req,res) => {
 
 const loginUser = async (req,res) => {
     try {
-        
         const validate = new Validator(req.body,{
             'email' : 'required|string',
             'password' : 'required|string'
