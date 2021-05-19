@@ -10,7 +10,7 @@ You will need Redis and Mongodb set up in your local environment to properly run
 - [**Mongodb**](https://docs.mongodb.com/manual/installation/)
 
 ## Setting up your application
-- - Clone this repository into your local environment
+- Clone this repository into your local environment
 ```git clone https://github.com/RoyAyo/talentql-test.git```
 
 - Create a .env file in your root project, copy and paste the following
